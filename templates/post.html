@@ -27,7 +27,7 @@
     <section class="items">
         <div class="items__item item item--post">
             <div class="item__top">
-                <a href="{{url_for('username', username=poster_name)}}" class="item__head">
+                <a href="{{url_for('username_', username=poster_name)}}" class="item__head">
                     <div class="item__ava-wrap">
                         <img src="{{poster_avatar}}" alt="" class="item__ava" width="47">
                     </div>
@@ -60,12 +60,12 @@
                     </p>
                     {% endfor %}
                 </div>
-                <form action="/" class="item__comment-form comment-form">
+                <form action="{{url_for('posts', post_id=pk)}}" class="item__comment-form comment-form" method="post">
                     <div class="comment-form__input-wrap">
-                        <input type="search" class="comment-form__input" placeholder="Ваше имя">
+                        <input type="search" class="comment-form__input" placeholder="Ваше имя" name="comment-form__input">
                     </div>
                     <div class="comment-form__input-wrap">
-                        <textarea class="comment-form__textarea" placeholder="Ваш комментарий" rows="6"></textarea>
+                        <textarea class="comment-form__textarea" placeholder="Ваш комментарий" rows="6" name="comment-form__textarea"></textarea>
                     </div>
                     <button type="submit" class="comment-form__btn">Отправить</button>
                 </form>

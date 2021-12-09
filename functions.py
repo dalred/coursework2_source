@@ -22,14 +22,6 @@ def search_tag(tag_name, profile_path):
             tags.append(item)
     return tags
 
-def view_tag(profile_path):
-    tags = []
-    for i in read_json(profile_path):
-        for tag in i['content'].split():
-            if tag.startswith("#"):
-                tags.append(tag.lstrip("#").lower())
-    tags = set(tags)
-    return tags
 
 #Много времени убил на эту функцию не без сторонней помощи, такое ощущение
 #что можно было сделать в тысячу раз проще и есть какая-то красивая регулярка
@@ -62,3 +54,15 @@ def delete_bookmarks(post_id, bookmarks_path):
     data.remove(post_id)
     with open(bookmarks_path, "w", encoding='utf-8') as f:
         json.dump(set(data), f, default=serialize_sets)
+
+def add_comment(post_id, comment, name, comments_path):
+    data = read_json(comments_path)
+    data_dict = {
+        "post_id": post_id,
+        "commenter_name": name,
+        "comment": comment,
+        "pk": int(data[-1]['pk'] + 1)
+    }
+    data.append(data_dict)
+    with open(comments_path, "w", encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
