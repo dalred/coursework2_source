@@ -27,7 +27,7 @@
     <section class="items">
         <div class="items__item item item--post">
             <div class="item__top">
-                <a href="{{url_for('username', username=item.poster_name)}}" class="item__head">
+                <a href="{{url_for('username', username=poster_name)}}" class="item__head">
                     <div class="item__ava-wrap">
                         <img src="{{poster_avatar}}" alt="" class="item__ava" width="47">
                     </div>
@@ -42,7 +42,7 @@
             </a>
             <div class="item__descr">
                 <p class="item__text">
-                    {{content}}
+                    {{content|safe}}
                 </p>
             </div>
             <div class="item__bottom">
