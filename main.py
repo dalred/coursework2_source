@@ -43,7 +43,8 @@ def images(name):
 def search_():
     try:
         search = request.args.get('s')
-        items = [item for item in read_json(profile_path) if search in item['content']]
+        profile = read_json(profile_path)
+        items = [item for item in regex_tags(profile) if search in item['content']]
         comments = counts_comments(items[:10], dict_file_id['comments_fileid'])
         return render_template('search.html', comments=comments, items=items, count=len(items), search=search)
     except:
