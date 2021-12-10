@@ -13,8 +13,9 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def page_index():
     bookmarks__ = read_json(bookmarks_path)
-    profile = regex_tags(profile_path)
-    return render_template('index.html', profile=profile, count=len(bookmarks__), bookmarks=bookmarks__)
+    profile = read_json(profile_path)
+    profile_html = regex_tags(profile)
+    return render_template('index.html', profile=profile_html, count=len(bookmarks__), bookmarks=bookmarks__)
 
 
 @app.route("/posts/<int:post_id>", methods=["GET", "POST"])
@@ -24,8 +25,9 @@ def posts(post_id):
         name = request.form.get('comment-form__input')
         add_comment(post_id, comment, name, comments_path)
     post = {}
-    profile = regex_tags(profile_path)
-    for item in profile:
+    profile = read_json(profile_path)
+    profile_html = regex_tags(profile)
+    for item in profile_html:
         if item['pk'] == post_id:
             post = item
     comments = [item for item in read_json(comments_path) if item['post_id'] == post_id]
@@ -52,7 +54,8 @@ def search_():
 
 @app.route("/users/<username>")
 def username_(username):
-    items = [item for item in read_json(profile_path) if item['poster_name'] == username]
+    profile = read_json(profile_path)
+    items = [item for item in regex_tags(profile) if item['poster_name'] == username]
     comments = counts_comments(items, comments_path)
     return render_template('user-feed.html', comments=comments, items=items)
 
