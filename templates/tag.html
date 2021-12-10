@@ -38,7 +38,7 @@
                 <a href="{{ url_for('posts', post_id=item.pk) }}" class="item__post-link">
                     <img src="{{ item.pic }}" alt="" width="348" class="item__post-img">
                 </a>
-                <p class="item__descr"><a href="/templates/tag.html" class="item__tag">#{{ tagname }}</a> {{ item.content[:50]}}...</p>
+                <p class="item__descr">{{ item.content[:50]|safe }}...</p>
                 <div class="item__post-info">
                     <p class="item__comments-counter">{{ comments[item.pk] }} комментариев</p>
                     <div class="item__counter">

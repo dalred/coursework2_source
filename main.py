@@ -6,15 +6,16 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 profile_path = os.path.join(BASEDIR, json_dir, 'data.json')
 
 images_path = os.path.join(BASEDIR, 'static\img')
-bookmarks_fileId = '1WcnYfBCuRUREplBY5ngGthd8iiEMzsSB'
+bookmarks_fileId = '1kIePmIBOeJkjBCQvNajl0WYvrIHtqF6w'
 comments_fileid = '1iCHQ7oDHWHeU9Cq-WB5h6xEJPlMrRPEd'
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def page_index():
     bookmarks__ = read_google_json(bookmarks_fileId)
-    profile = regex_tags(profile_path)
-    return render_template('index.html', profile=profile, count=len(bookmarks__), bookmarks=bookmarks__)
+    profile = read_json(profile_path)
+    profile_html = regex_tags(profile)
+    return render_template('index.html', profile=profile_html, count=len(bookmarks__), bookmarks=bookmarks__)
 
 
 @app.route("/posts/<int:post_id>", methods=["GET", "POST"])
@@ -24,12 +25,14 @@ def posts(post_id):
         name = request.form.get('comment-form__input')
         add_comment(post_id, comment, name, comments_fileid)
     post = {}
-    profile = regex_tags(profile_path)
-    for item in profile:
+    profile = read_json(profile_path)
+    profile_html = regex_tags(profile)
+    for item in profile_html:
         if item['pk'] == post_id:
             post = item
+    data = read_google_json(bookmarks_fileId)
     comments = [item for item in read_google_json(comments_fileid) if item['post_id'] == post_id]
-    return render_template('post.html', **post, comments=comments, count=len(comments))
+    return render_template('post.html', **post, comments=comments, count=len(comments), bookmarks=data)
 
 
 @app.route("/uploads/images/<name>")
@@ -50,16 +53,19 @@ def search_():
 
 @app.route("/users/<username>")
 def username_(username):
-    items = [item for item in read_json(profile_path) if item['poster_name'] == username]
+    profile = read_json(profile_path)
+    items = [item for item in regex_tags(profile) if item['poster_name'] == username]
     comments = counts_comments(items, comments_fileid)
-    return render_template('user-feed.html', comments=comments, items=items)
+    data = read_google_json(bookmarks_fileId)
+    return render_template('user-feed.html', comments=comments, items=items, bookmarks=data)
 
 
 @app.route("/tag/<tagname>", methods=["GET"])
 def page_tag(tagname):
     if not tagname:
         return "Record not found", 400
-    items = search_tag(tagname, profile_path)
+    profile = read_json(profile_path)
+    items = search_tag(tagname, profile)
     comments = counts_comments(items, comments_fileid)
     return render_template('tag.html', items=items, comments=comments, tagname=tagname)
 

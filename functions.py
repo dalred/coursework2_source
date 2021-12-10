@@ -17,25 +17,25 @@ def counts_comments(items, file_id):
     return comments_list_by_posts
 
 
-def search_tag(tag_name, profile_path):
+def search_tag(tag_name, profile):
     tags = []
-    for item in read_json(profile_path):
+    for item in profile:
         if f"#{tag_name}" in item['content'].lower():
             tags.append(item)
-    return tags
+    tag=regex_tags(tags)
+    return tag
 
 
 #Много времени убил на эту функцию не без сторонней помощи, такое ощущение
 #что можно было сделать в тысячу раз проще и есть какая-то красивая регулярка
 #Буду ждать решения от наставников
 #Так же интересно был ли какой-то смысл делать с ней что-то в шаблоне.
-def regex_tags(profile_path):
+def regex_tags(profile):
     regexp = re.compile(r'(?<!>|\w)#{1}\w+')
-    profile = read_json(profile_path)
     for item in profile:
         while re.search(regexp, item['content']) is not None:
             replacement = re.search(regexp, item['content'])[0][1:]
-            item['content'] = re.sub(regexp, f'<a href="/tag/{replacement}#{replacement}">#{replacement}</a>',
+            item['content'] = re.sub(regexp, f'<a href="/tag/{replacement}">#{replacement}</a>',
                                      item['content'],
                                      count=1)
     return profile
