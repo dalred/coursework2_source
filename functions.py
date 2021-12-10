@@ -1,12 +1,14 @@
 import json, re
+from google_authentication import *
+
 def read_json(name):
     with open(name, "r", encoding='utf-8') as file:
         return json.load(file)
 
-def counts_comments(items, comments_path):
+def counts_comments(items, file_id):
     item_pk = [item['pk'] for item in items]
     comments_list_by_posts = {}
-    for comments in read_json(comments_path):
+    for comments in read_google_json(file_id):
         if comments['post_id'] in item_pk:
             if comments['post_id'] not in comments_list_by_posts.keys():
                 comments_list_by_posts[comments['post_id']] = 1
@@ -38,25 +40,20 @@ def regex_tags(profile_path):
                                      count=1)
     return profile
 
-def serialize_sets(obj):
-    if isinstance(obj, set):
-        return list(obj)
-    return obj
 
-def add_bookmarks(post_id, bookmarks_path):
-    data = read_json(bookmarks_path)
+
+def add_bookmarks(post_id, file_id):
+    data = read_google_json(file_id)
     data.append(post_id)
-    with open(bookmarks_path, "w", encoding='utf-8') as f:
-        json.dump(set(data), f, default=serialize_sets)
+    add_json_file(data, file_id)
 
-def delete_bookmarks(post_id, bookmarks_path):
-    data = read_json(bookmarks_path)
+def delete_bookmarks(post_id, file_id):
+    data = read_google_json(file_id)
     data.remove(post_id)
-    with open(bookmarks_path, "w", encoding='utf-8') as f:
-        json.dump(set(data), f, default=serialize_sets)
+    add_json_file(data, file_id)
 
-def add_comment(post_id, comment, name, comments_path):
-    data = read_json(comments_path)
+def add_comment(post_id, comment, name, file_id):
+    data = read_google_json(file_id)
     data_dict = {
         "post_id": post_id,
         "commenter_name": name,
@@ -64,5 +61,4 @@ def add_comment(post_id, comment, name, comments_path):
         "pk": int(data[-1]['pk'] + 1)
     }
     data.append(data_dict)
-    with open(comments_path, "w", encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+    add_json_file(data, file_id)
