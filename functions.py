@@ -33,7 +33,7 @@ def regex_tags(profile_path):
     for item in profile:
         while re.search(regexp, item['content']) is not None:
             replacement = re.search(regexp, item['content'])[0][1:]
-            item['content'] = re.sub(regexp, f'<a href="/tag/{replacement}#{replacement}">#{replacement}</a>',
+            item['content'] = re.sub(regexp, f'<a href="/tag/{replacement}">#{replacement}</a>',
                                      item['content'],
                                      count=1)
     return profile

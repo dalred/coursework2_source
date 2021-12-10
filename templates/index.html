@@ -48,14 +48,12 @@
                 </div>
                 <div class="item__post-bottom">
                     <a href="{{ url_for('posts', post_id=item.pk) }}" class="item__btn-more">Подробнее</a>
-                    {% if item.pk in bookmarks %}
-                        <form action="{{ url_for('delete_bookmarks_', post_id=item.pk) }}" method="get">
-                    {% else %}
-                        <form action="{{ url_for('bookmarks_add', post_id=item.pk) }}" method="get">
-                    {% endif %}
-                    <button type="submit" class="item__bookmark-btn {% if item.pk in bookmarks %}item__bookmark-btn_fav{% endif %}">
-                        <img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
-                    </button>
+                    <form action="{% if item.pk in bookmarks %}{{ url_for('delete_bookmarks_', post_id=item.pk) }}{% else %}{{ url_for('bookmarks_add', post_id=item.pk) }}{% endif %}"
+                          method="get">
+                        <button type="submit"
+                                class="item__bookmark-btn {% if item.pk in bookmarks %}item__bookmark-btn_fav{% endif %}">
+                            <img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
+                        </button>
                     </form>
                 </div>
             </div>

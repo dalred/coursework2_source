@@ -27,45 +27,52 @@
     <section class="items">
         <div class="items__item item item--post">
             <div class="item__top">
-                <a href="{{url_for('username_', username=poster_name)}}" class="item__head">
+                <a href="{{ url_for('username_', username=poster_name) }}" class="item__head">
                     <div class="item__ava-wrap">
-                        <img src="{{poster_avatar}}" alt="" class="item__ava" width="47">
+                        <img src="{{ poster_avatar }}" alt="" class="item__ava" width="47">
                     </div>
-                    <span class="item__username">{{poster_name}}</span>
+                    <span class="item__username">{{ poster_name }}</span>
                 </a>
-                <button type="button" class="item__bookmark-btn">
-                    <img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
-                </button>
+                <form action="
+                        {% if pk in bookmarks %}{{ url_for('delete_bookmarks_', post_id=pk) }}{% else %}{{ url_for('bookmarks_add', post_id=pk) }}{% endif %}"
+                      method="get">
+                    <button type="submit"
+                            class="item__bookmark-btn {% if pk in bookmarks %}item__bookmark-btn_fav{% endif %}">
+                        <img src="../static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
+                    </button>
+                </form>
             </div>
             <a href="" class="item__post-link">
-                <img src="{{pic}}" alt="" width="348" class="item__post-img">
+                <img src="{{ pic }}" alt="" width="348" class="item__post-img">
             </a>
             <div class="item__descr">
                 <p class="item__text">
-                    {{content|safe}}
+                    {{ content|safe }}
                 </p>
             </div>
             <div class="item__bottom">
                 <div class="item__post-info">
-                    <p class="item__comments-counter">{{count}} комментария</p>
+                    <p class="item__comments-counter">{{ count }} комментария</p>
                     <div class="item__counter">
                         <img src="../static/img/eye.png" alt="" class="item__counter-icon" width="26">
-                        <span class="item__counter-text">{{views_count}}</span>
+                        <span class="item__counter-text">{{ views_count }}</span>
                     </div>
                 </div>
                 <div class="item__comments">
                     {% for comment in comments %}
-                    <p class="item__comment">
-                        <b>{{comment.commenter_name}} </b>{{comment.comment}}
-                    </p>
+                        <p class="item__comment">
+                            <b>{{ comment.commenter_name }} </b>{{ comment.comment }}
+                        </p>
                     {% endfor %}
                 </div>
-                <form action="{{url_for('posts', post_id=pk)}}" class="item__comment-form comment-form" method="post">
+                <form action="{{ url_for('posts', post_id=pk) }}" class="item__comment-form comment-form" method="post">
                     <div class="comment-form__input-wrap">
-                        <input type="search" class="comment-form__input" placeholder="Ваше имя" name="comment-form__input">
+                        <input type="search" class="comment-form__input" placeholder="Ваше имя"
+                               name="comment-form__input">
                     </div>
                     <div class="comment-form__input-wrap">
-                        <textarea class="comment-form__textarea" placeholder="Ваш комментарий" rows="6" name="comment-form__textarea"></textarea>
+                        <textarea class="comment-form__textarea" placeholder="Ваш комментарий" rows="6"
+                                  name="comment-form__textarea"></textarea>
                     </div>
                     <button type="submit" class="comment-form__btn">Отправить</button>
                 </form>
